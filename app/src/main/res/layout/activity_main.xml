@@ -6,13 +6,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-    <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="Hello World!"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintLeft_toLeftOf="parent"
-      app:layout_constraintRight_toRightOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
 
-  </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+            android:text="Start Timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/startButton"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="100dp"
+            android:onClick="startTimer"/>
+    <Button
+            android:text="Stop Timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/stopButton"
+            app:layout_constraintStart_toStartOf="@+id/startButton" app:layout_constraintEnd_toEndOf="@+id/startButton"
+            app:layout_constraintTop_toBottomOf="@+id/startButton" android:layout_marginTop="20dp"
+            android:onClick="stopTimer"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
