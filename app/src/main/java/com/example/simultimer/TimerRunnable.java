@@ -20,12 +20,13 @@ public class TimerRunnable implements Runnable {
     public static final int COMPLETED = 2;
 
     // timer variables
-    private final double duration;
-    private final String name;
+    private double duration;
+    private String name;
     private double remaining;
     private int state;
 
 
+    public TimerRunnable() {}
 
     // constructor
     public TimerRunnable(double duration, String name) {
