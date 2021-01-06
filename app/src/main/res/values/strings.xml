@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Simultimer</string>
+    <string name="create_timer">Create Timer</string>
 </resources>
