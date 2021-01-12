@@ -107,6 +107,22 @@ public class MainActivity extends AppCompatActivity
         dialog.show();
     }
 
+    public void deleteTimer(final int pos) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setPositiveButton("OK", (dialog, id) -> {
+            activeTimers.remove(pos);
+            timersAdapter.notifyDataSetChanged();
+        });
+        builder.setNegativeButton("CANCEL", (dialog, id) -> {
+            // do nothing
+        });
+        builder.setMessage("Are you sure you want to delete this timer?");
+        builder.setTitle("Delete Timer");
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
 
 
     // timer creation menu functions
@@ -140,7 +156,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onLongClick(View view) {
         int pos = timersRecycler.getChildAdapterPosition(view);
-        // deleteTimer(pos);
+        deleteTimer(pos);
         return true;
     }
 }
