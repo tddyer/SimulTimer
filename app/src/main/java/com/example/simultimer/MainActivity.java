@@ -1,8 +1,11 @@
 package com.example.simultimer;
 
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.text.InputType;
+import android.view.*;
+import android.widget.EditText;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -57,10 +60,6 @@ public class MainActivity extends AppCompatActivity
 
     // timer management functions
 
-    public void createTimer() {
-
-    }
-
     public void startTimer(View v, int pos) {
         timerThread.start();
     }
@@ -70,6 +69,42 @@ public class MainActivity extends AppCompatActivity
         double rem = timer.getRemaining();
         timer = new TimerRunnable(rem, timer.getName());
         timerThread = new Thread(timer);
+    }
+
+
+    // alert dialogs
+
+    public void createTimer() {
+
+        LayoutInflater inflater = LayoutInflater.from(this);
+        @SuppressLint("InflateParams")
+        final View view = inflater.inflate(R.layout.add_timer_layout, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(view);
+        builder.setTitle("New Timer");
+
+        EditText title = view.findViewById(R.id.textTitle);
+        EditText duration = view.findViewById(R.id.textDuration);
+
+        builder.setPositiveButton("Create", (dialog, id) -> {
+
+            String t = String.valueOf(title.getText());
+            int d = Integer.parseInt(String.valueOf(duration.getText()));
+
+            TimerRunnable temp = new TimerRunnable(d, t);
+            activeTimers.add(temp);
+
+            timersAdapter.notifyDataSetChanged();
+
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, id) -> {
+            // do nothing
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 
