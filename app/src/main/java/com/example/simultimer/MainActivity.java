@@ -1,8 +1,7 @@
 package com.example.simultimer;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.text.InputType;
+import android.util.Log;
 import android.view.*;
 import android.widget.EditText;
 import androidx.appcompat.app.AlertDialog;
@@ -12,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity
         implements View.OnClickListener, View.OnLongClickListener {
@@ -27,7 +27,8 @@ public class MainActivity extends AppCompatActivity
     // local variables
     Thread timerThread;
     TimerRunnable timer;
-    private final ArrayList<TimerRunnable> activeTimers = new ArrayList<>();
+    private ArrayList<TimerRunnable> timerRunnables = new ArrayList<>();
+    private HashMap<TimerRunnable, Thread> timerThreads = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity
         timersRecycler = findViewById(R.id.timersRecyclerView);
 
         // connected RecyclerView with the list of active timers
-        timersAdapter = new TimersAdapter(activeTimers, this);
+        timersAdapter = new TimersAdapter(timerRunnables, this);
         timersRecycler.setAdapter(timersAdapter);
         timersRecycler.setLayoutManager(new LinearLayoutManager(this));
 
@@ -48,8 +49,12 @@ public class MainActivity extends AppCompatActivity
 
         // creating test data
         for (int i = 5; i < 30; i+=5) {
-            TimerRunnable t = new TimerRunnable(i, "Timer " + i);
-            activeTimers.add(t);
+            String name = "t" + i;
+            TimerRunnable t = new TimerRunnable(i, name);
+            timerRunnables.add(t);
+
+            Thread temp = new Thread(t, name);
+            timerThreads.put(t, temp);
         }
 
         timersAdapter.notifyDataSetChanged();
@@ -93,7 +98,10 @@ public class MainActivity extends AppCompatActivity
             int d = Integer.parseInt(String.valueOf(duration.getText()));
 
             TimerRunnable temp = new TimerRunnable(d, t);
-            activeTimers.add(temp);
+            timerRunnables.add(temp);
+
+            Thread thread = new Thread(temp, t);
+            timerThreads.put(temp, thread);
 
             timersAdapter.notifyDataSetChanged();
 
@@ -110,7 +118,7 @@ public class MainActivity extends AppCompatActivity
     public void deleteTimer(final int pos) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setPositiveButton("OK", (dialog, id) -> {
-            activeTimers.remove(pos);
+            timerRunnables.remove(pos);
             timersAdapter.notifyDataSetChanged();
         });
         builder.setNegativeButton("CANCEL", (dialog, id) -> {
@@ -150,7 +158,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onClick(View view) {
         int pos = timersRecycler.getChildAdapterPosition(view);
-        TimerRunnable tr = activeTimers.get(pos);
+        TimerRunnable tr = timerRunnables.get(pos);
+        Thread th = timerThreads.get(tr);
+        Log.d(TAG, "onClick: " + th.getName());
+
     }
 
     @Override
