@@ -27,8 +27,8 @@ public class MainActivity extends AppCompatActivity
     // local variables
     Thread timerThread;
     TimerRunnable timer;
-    private ArrayList<TimerRunnable> timerRunnables = new ArrayList<>();
-    private HashMap<TimerRunnable, Thread> timerThreads = new HashMap<>();
+    public static ArrayList<TimerRunnable> timerRunnables = new ArrayList<>();
+    public static HashMap<TimerRunnable, Thread> timerThreads = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
