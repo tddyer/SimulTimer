@@ -21,12 +21,10 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "MainActivity";
 
     // RecyclerView variables
-    private RecyclerView timersRecycler;
-    private TimersAdapter timersAdapter;
+    public RecyclerView timersRecycler;
+    public static TimersAdapter timersAdapter;
 
-    // local variables
-    Thread timerThread;
-    TimerRunnable timer;
+    // timer storage data structures
     public static ArrayList<TimerRunnable> timerRunnables = new ArrayList<>();
     public static HashMap<TimerRunnable, Thread> timerThreads = new HashMap<>();
 
@@ -50,7 +48,7 @@ public class MainActivity extends AppCompatActivity
         // creating test data
         for (int i = 5; i < 30; i+=5) {
             String name = "t" + i;
-            TimerRunnable t = new TimerRunnable(i, name);
+            TimerRunnable t = new TimerRunnable(i, name, timerRunnables.size(), this);
             timerRunnables.add(t);
 
             Thread temp = new Thread(t, name);
@@ -61,19 +59,8 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-
-
-    // timer management functions
-
-    public void startTimer(View v, int pos) {
-        timerThread.start();
-    }
-
-    public void stopTimer(View v, int pos) {
-        timerThread.interrupt();
-        double rem = timer.getRemaining();
-        timer = new TimerRunnable(rem, timer.getName());
-        timerThread = new Thread(timer);
+    public void updateTimerUI(int position) {
+        timersAdapter.notifyItemChanged(position, timerRunnables.get(position));
     }
 
 
@@ -97,7 +84,7 @@ public class MainActivity extends AppCompatActivity
             String t = String.valueOf(title.getText());
             int d = Integer.parseInt(String.valueOf(duration.getText()));
 
-            TimerRunnable temp = new TimerRunnable(d, t);
+            TimerRunnable temp = new TimerRunnable(d, t, timerRunnables.size(), this);
             timerRunnables.add(temp);
 
             Thread thread = new Thread(temp, t);
@@ -158,10 +145,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onClick(View view) {
         int pos = timersRecycler.getChildAdapterPosition(view);
-        TimerRunnable tr = timerRunnables.get(pos);
-        Thread th = timerThreads.get(tr);
-        Log.d(TAG, "onClick: " + th.getName());
-
+        // TODO: edit a timer when it's clicked (navigate to a new EditActivity)
     }
 
     @Override

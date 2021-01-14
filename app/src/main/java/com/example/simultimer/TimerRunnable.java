@@ -3,13 +3,18 @@ package com.example.simultimer;
 
 /*
 
-    Runnable class used to create a single timer instance
+    Runnable class used to create a single timer. Timers have a name
+    that they are identified by and a duration that specifies how long
+    of a timer the user is requesting.
 
 */
 
 import android.util.Log;
 
 public class TimerRunnable implements Runnable {
+
+    // reference to MainActivity for updating the timer UIs
+    MainActivity mainActivity;
 
     // class tag
     private static final String TAG = "TimerRunnable";
@@ -24,16 +29,17 @@ public class TimerRunnable implements Runnable {
     private String name;
     private double remaining;
     private int state;
+    public int position;
 
-
-    public TimerRunnable() {}
 
     // constructor
-    public TimerRunnable(double duration, String name) {
+    public TimerRunnable(double duration, String name, int position, MainActivity mainActivity) {
         this.duration = duration;
         this.name = name;
+        this.position = position;
         this.remaining = duration;
         this.state = STOPPED;
+        this.mainActivity = mainActivity;
     }
 
 
@@ -49,14 +55,12 @@ public class TimerRunnable implements Runnable {
         try {
             while (remaining > 0 && this.state == RUNNING){
 
-                Log.d(TAG, "Time remaining: " + this.remaining);
-
-                if (this.state == STOPPED) {
-                    throw new Exception("TimerStoppedException");
-                }
-
+                // wait one second
                 Thread.sleep(1000);
+
+                // update time remaining and update the UI to reflect the new time remaining on the timer
                 this.remaining--;
+                mainActivity.runOnUiThread( () -> {mainActivity.updateTimerUI(this.position);});
             }
 
             // marking timer as completed
@@ -65,7 +69,6 @@ public class TimerRunnable implements Runnable {
         } catch (Exception e) {
             // if timer was interrupted, set the state to STOPPED
             this.state = STOPPED;
-            Log.d(TAG, "run: timer " + this.name + " was stopped.\n   Time remaining upon interruption: " + this.remaining);
         }
     }
 

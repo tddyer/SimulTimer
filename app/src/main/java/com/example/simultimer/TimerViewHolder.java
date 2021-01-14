@@ -8,7 +8,6 @@ package com.example.simultimer;
 
 */
 
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -19,9 +18,12 @@ public class TimerViewHolder extends RecyclerView.ViewHolder implements View.OnC
 
     TextView title, timeRemaining;
     Button startButton, pauseButton;
+    MainActivity mainActivity;
 
-    TimerViewHolder(@NonNull View view) {
+    TimerViewHolder(@NonNull View view, MainActivity mainActivity) {
         super(view);
+
+        this.mainActivity = mainActivity;
 
         // create references to layout objects from timer_recycler_element.xml layout
         title = view.findViewById(R.id.timerTitle);
@@ -54,7 +56,7 @@ public class TimerViewHolder extends RecyclerView.ViewHolder implements View.OnC
                 double rem = selectedTimer.getRemaining();
 
                 // create new runnable + thread objects starting using the remaining time on the old thread
-                TimerRunnable newTimer = new TimerRunnable(rem, selectedTimer.getName());
+                TimerRunnable newTimer = new TimerRunnable(rem, selectedTimer.getName(), getAdapterPosition(), mainActivity);
                 Thread newThread = new Thread(newTimer);
 
                 // update the timer storage data structures on MainActivity with new objects

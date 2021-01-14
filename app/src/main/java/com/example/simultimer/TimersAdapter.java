@@ -11,8 +11,8 @@ import java.util.ArrayList;
 public class TimersAdapter extends RecyclerView.Adapter<TimerViewHolder> {
 
     // local variables
-    private ArrayList<TimerRunnable> timers;
-    private MainActivity mainActivity;
+    ArrayList<TimerRunnable> timers;
+    MainActivity mainActivity;
 
     public TimersAdapter(ArrayList<TimerRunnable> timers, MainActivity mainActivity) {
         this.timers = timers;
@@ -29,14 +29,14 @@ public class TimersAdapter extends RecyclerView.Adapter<TimerViewHolder> {
         itemView.setOnClickListener(mainActivity);
         itemView.setOnLongClickListener(mainActivity);
 
-        return new TimerViewHolder(itemView);
+        return new TimerViewHolder(itemView, mainActivity);
     }
 
     @Override
     public void onBindViewHolder(@NonNull TimerViewHolder holder, int position) {
         TimerRunnable timer = timers.get(position);
         holder.title.setText(timer.getName());
-        holder.timeRemaining.setText(Double.toString(timer.getDuration()));
+        holder.timeRemaining.setText(Double.toString(timer.getRemaining()));
     }
 
     @Override
